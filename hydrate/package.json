@@ -1,0 +1,6 @@
+{
+  "name": "videobox-strip/hydrate",
+  "description": "VideoboxStrip component hydration app.",
+  "main": "index.js",
+  "types": "index.d.ts"
+}

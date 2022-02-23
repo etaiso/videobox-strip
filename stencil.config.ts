@@ -4,6 +4,9 @@ export const config: Config = {
   namespace: 'videobox-strip',
   outputTargets: [
     {
+      type: 'dist-hydrate-script',
+    },
+    {
       type: 'dist-custom-elements-bundle',
       inlineDynamicImports: true,
       externalRuntime: false,
