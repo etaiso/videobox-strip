@@ -1,0 +1,12 @@
+:host {
+  border: 1px solid #000;
+  min-width: 250px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.text {
+  padding: 10px;
+}
