@@ -1026,6 +1026,9 @@ let VideoboxStripContainer$1 = class extends H {
     super();
     this.__registerHost();
     this.__attachShadow();
+    // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
+    // @ts-ignore
+    this.data = JSON.parse(this.getAttribute('data'));
   }
   render() {
     console.log('this.data', this.data);
@@ -1086,7 +1089,7 @@ let VideoboxVideo$1 = class extends H {
   static get style() { return videoboxVideoCss; }
 };
 
-const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[16]}]);
+const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container"]);
 const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"item":[16],"index":[2],"active":[32]},[[1,"mouseenter","mouseEnterHandler"],[1,"mouseleave","mouseLeaveHandler"]]]);
 const VideoboxVideo = /*@__PURE__*/proxyCustomElement(VideoboxVideo$1, [1,"videobox-video",{"active":[4],"src":[1]}]);
 const defineCustomElements = (opts) => {

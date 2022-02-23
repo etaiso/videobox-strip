@@ -5504,6 +5504,9 @@ const videoboxStripContainerCss = "/*!@:host*/.sc-videobox-strip-container-h{dis
 class VideoboxStripContainer {
   constructor(hostRef) {
     registerInstance(this, hostRef);
+    // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
+    // @ts-ignore
+    this.data = JSON.parse(this.getAttribute('data'));
   }
   render() {
     console.log('this.data', this.data);
@@ -5513,9 +5516,7 @@ class VideoboxStripContainer {
   static get cmpMeta() { return {
     "$flags$": 9,
     "$tagName$": "videobox-strip-container",
-    "$members$": {
-      "data": [16]
-    },
+    "$members$": undefined,
     "$listeners$": undefined,
     "$lazyBundleId$": "-",
     "$attrsToReflect$": []
