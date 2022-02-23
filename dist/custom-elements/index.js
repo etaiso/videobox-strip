@@ -1039,7 +1039,7 @@ let VideoboxStripContainer$1 = class extends H {
   static get style() { return videoboxStripContainerCss; }
 };
 
-const videoboxStripItemCss = ".wrapper{position:relative;height:160px;color:#fff;border-radius:5px}.wrapper:hover{transform:scale(1.3);transition-duration:1s}.overlay{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}.text{padding:15px}videobox-video{display:none}";
+const videoboxStripItemCss = ".wrapper{position:relative;height:160px;width:240px;color:#fff;border-radius:5px}.wrapper:hover{transform:scale(1.3);transition-duration:0.8s}.overlay{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}.text{padding:15px}videobox-video{display:none}img{width:100%;height:100%}";
 
 let VideoboxStripItem$1 = class extends H {
   constructor() {
@@ -1066,7 +1066,7 @@ let VideoboxStripItem$1 = class extends H {
   static get style() { return videoboxStripItemCss; }
 };
 
-const videoboxVideoCss = "video{height:160px;object-fit:cover;object-position:50% 50%}";
+const videoboxVideoCss = "video{height:160px;width:240px;object-fit:cover;object-position:50% 50%}";
 
 let VideoboxVideo$1 = class extends H {
   constructor() {
