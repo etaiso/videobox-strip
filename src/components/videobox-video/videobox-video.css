@@ -3,4 +3,5 @@ video {
   width: 240px;
   object-fit: cover;
   object-position: 50% 50%;
+  border-radius: 5px;
 }
