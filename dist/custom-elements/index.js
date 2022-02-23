@@ -27,6 +27,29 @@ const supportsConstructibleStylesheets = /*@__PURE__*/ (() => {
         return false;
     })()
     ;
+const addHostEventListeners = (elm, hostRef, listeners, attachParentListeners) => {
+    if (listeners) {
+        listeners.map(([flags, name, method]) => {
+            const target = elm;
+            const handler = hostListenerProxy(hostRef, method);
+            const opts = hostListenerOpts(flags);
+            plt.ael(target, name, handler, opts);
+            (hostRef.$rmListeners$ = hostRef.$rmListeners$ || []).push(() => plt.rel(target, name, handler, opts));
+        });
+    }
+};
+const hostListenerProxy = (hostRef, methodName) => (ev) => {
+    try {
+        {
+            hostRef.$hostElement$[methodName](ev);
+        }
+    }
+    catch (e) {
+        consoleError(e);
+    }
+};
+// prettier-ignore
+const hostListenerOpts = (flags) => (flags & 2 /* Capture */) !== 0;
 const createTime = (fnName, tagName = '') => {
     {
         return () => {
@@ -206,6 +229,12 @@ const setAccessor = (elm, memberName, oldValue, newValue, isSvg, flags) => {
             classList.remove(...oldClasses.filter((c) => c && !newClasses.includes(c)));
             classList.add(...newClasses.filter((c) => c && !oldClasses.includes(c)));
         }
+        else if (memberName === 'ref') {
+            // minifier will clean this up
+            if (newValue) {
+                newValue(elm);
+            }
+        }
         else {
             // Set property if it exists and it's not a SVG
             const isComplex = isComplexType(newValue);
@@ -323,6 +352,7 @@ const removeVnodes = (vnodes, startIdx, endIdx, vnode, elm) => {
     for (; startIdx <= endIdx; ++startIdx) {
         if ((vnode = vnodes[startIdx])) {
             elm = vnode.$elm$;
+            callNodeRefs(vnode);
             // remove the vnode's element from the dom
             elm.remove();
         }
@@ -439,6 +469,12 @@ const patch = (oldVNode, newVNode) => {
         // update the text content for the text only vnode
         // and also only if the text is different than before
         elm.data = text;
+    }
+};
+const callNodeRefs = (vNode) => {
+    {
+        vNode.$attrs$ && vNode.$attrs$.ref && vNode.$attrs$.ref(null);
+        vNode.$children$ && vNode.$children$.map(callNodeRefs);
     }
 };
 const renderVdom = (hostRef, renderFnResults) => {
@@ -633,6 +669,15 @@ const addHydratedFlag = (elm) => elm.classList.add('hydrated')
 const parsePropertyValue = (propValue, propType) => {
     // ensure this value is of the correct prop type
     if (propValue != null && !isComplexType(propValue)) {
+        if (propType & 4 /* Boolean */) {
+            // per the HTML spec, any string value means it is a boolean true value
+            // but we'll cheat here and say that the string "false" is the boolean false
+            return propValue === 'false' ? false : propValue === '' || !!propValue;
+        }
+        if (propType & 2 /* Number */) {
+            // force it to be a number
+            return parseFloat(propValue);
+        }
         if (propType & 1 /* String */) {
             // could have been passed as a number or boolean
             // but we still want it as a string
@@ -649,14 +694,32 @@ const getValue = (ref, propName) => getHostRef(ref).$instanceValues$.get(propNam
 const setValue = (ref, propName, newVal, cmpMeta) => {
     // check our new property value against our internal value
     const hostRef = getHostRef(ref);
+    const elm = ref;
     const oldVal = hostRef.$instanceValues$.get(propName);
     const flags = hostRef.$flags$;
+    const instance = elm;
     newVal = parsePropertyValue(newVal, cmpMeta.$members$[propName][0]);
     if (newVal !== oldVal) {
         // gadzooks! the property's value has changed!!
         // set our new value!
         hostRef.$instanceValues$.set(propName, newVal);
         {
+            // get an array of method names of watch functions to call
+            if (cmpMeta.$watchers$ && flags & 128 /* isWatchReady */) {
+                const watchMethods = cmpMeta.$watchers$[propName];
+                if (watchMethods) {
+                    // this instance is watching for when this property changed
+                    watchMethods.map((watchMethodName) => {
+                        try {
+                            // fire off each of the watch methods that are watching this property
+                            instance[watchMethodName](newVal, oldVal, propName);
+                        }
+                        catch (e) {
+                            consoleError(e, elm);
+                        }
+                    });
+                }
+            }
             if ((flags & (2 /* hasRendered */ | 16 /* isQueuedForUpdate */)) === 2 /* hasRendered */) {
                 // looks like this value actually changed, so we've got work to do!
                 // but only if we've already rendered, otherwise just chill out
@@ -669,6 +732,9 @@ const setValue = (ref, propName, newVal, cmpMeta) => {
 };
 const proxyComponent = (Cstr, cmpMeta, flags) => {
     if (cmpMeta.$members$) {
+        if (Cstr.watchers) {
+            cmpMeta.$watchers$ = Cstr.watchers;
+        }
         // It's better to have a const than two Object.entries()
         const members = Object.entries(cmpMeta.$members$);
         const prototype = Cstr.prototype;
@@ -833,12 +899,24 @@ const connectedCallback = (elm) => {
                 initializeComponent(elm, hostRef, cmpMeta);
             }
         }
+        else {
+            // not the first time this has connected
+            // reattach any event listeners to the host
+            // since they would have been removed when disconnected
+            addHostEventListeners(elm, hostRef, cmpMeta.$listeners$);
+        }
         endConnected();
     }
 };
 const disconnectedCallback = (elm) => {
     if ((plt.$flags$ & 1 /* isTmpDisconnected */) === 0) {
-        getHostRef(elm);
+        const hostRef = getHostRef(elm);
+        {
+            if (hostRef.$rmListeners$) {
+                hostRef.$rmListeners$.map((rmListener) => rmListener());
+                hostRef.$rmListeners$ = undefined;
+            }
+        }
     }
 };
 const proxyCustomElement = (Cstr, compactMeta) => {
@@ -848,6 +926,12 @@ const proxyCustomElement = (Cstr, compactMeta) => {
     };
     {
         cmpMeta.$members$ = compactMeta[2];
+    }
+    {
+        cmpMeta.$listeners$ = compactMeta[3];
+    }
+    {
+        cmpMeta.$watchers$ = Cstr.$watchers$;
     }
     Object.assign(Cstr.prototype, {
         __registerHost() {
@@ -886,6 +970,7 @@ const registerHost = (elm, cmpMeta) => {
         elm['s-p'] = [];
         elm['s-rc'] = [];
     }
+    addHostEventListeners(elm, hostRef, cmpMeta.$listeners$);
     return hostRefs.set(elm, hostRef);
 };
 const isMemberInElement = (elm, memberName) => memberName in elm;
@@ -934,27 +1019,6 @@ const flush = () => {
 const nextTick = /*@__PURE__*/ (cb) => promiseResolve().then(cb);
 const writeTask = /*@__PURE__*/ queueTask(queueDomWrites, true);
 
-function format(first, middle, last) {
-  return (first || '') + (middle ? ` ${middle}` : '') + (last ? ` ${last}` : '');
-}
-
-const myComponentCss = ":host{display:block}";
-
-let MyComponent$1 = class extends H {
-  constructor() {
-    super();
-    this.__registerHost();
-    this.__attachShadow();
-  }
-  getText() {
-    return format(this.first, this.middle, this.last);
-  }
-  render() {
-    return h("div", null, "Hello, World! I'm ", this.getText());
-  }
-  static get style() { return myComponentCss; }
-};
-
 const videoboxStripContainerCss = ":host{display:flex;flex-direction:row;gap:10px}";
 
 let VideoboxStripContainer$1 = class extends H {
@@ -963,42 +1027,79 @@ let VideoboxStripContainer$1 = class extends H {
     this.__registerHost();
     this.__attachShadow();
     this.data = [
-      { title: 'Dummy title #1', desc: 'desc' },
-      { title: 'Dummy title #2', desc: 'desc' },
-      { title: 'Dummy title #3', desc: 'desc' },
-      { title: 'Dummy title #4', desc: 'desc' },
-      { title: 'Dummy title #5', desc: 'desc' },
+      { title: 'Dummy title #1', description: 'Description', videoSrc: 'https://video.wixstatic.com/video/11062b_2e82a4146c344371990b5839819e8806/480p/mp4/file.mp4', imageSrc: 'https://static.wixstatic.com/media/11062b_8cdd36bb40d443309c23a118d0b9ef26f000.jpg/v1/fill/w_240,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_8cdd36bb40d443309c23a118d0b9ef26f000.jpg' },
+      { title: 'Dummy title #2', description: 'Description', videoSrc: 'https://video.wixstatic.com/video/11062b_3da4a26484194105bde5b3935f5afb7b/480p/mp4/file.mp4', imageSrc: 'https://static.wixstatic.com/media/11062b_2bd2aa6ddc2d47b182a186e7de7e60acf000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_2bd2aa6ddc2d47b182a186e7de7e60acf000.jpg' },
+      { title: 'Dummy title #3', description: 'Description', videoSrc: 'https://video.wixstatic.com/video/11062b_c5dfb9a4acf74b67806ea4cb604b9c7f/480p/mp4/file.mp4', imageSrc: 'https://static.wixstatic.com/media/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg' },
+      { title: 'Dummy title #4', description: 'Description', videoSrc: 'https://video.wixstatic.com/video/11062b_2bd2aa6ddc2d47b182a186e7de7e60ac/480p/mp4/file.mp4', imageSrc: 'https://static.wixstatic.com/media/11062b_1c7f9e02626245468bae759dc5530425f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_1c7f9e02626245468bae759dc5530425f000.jpg' },
     ];
   }
   render() {
-    return (h(Host, null, this.data.map(i => h("videobox-strip-item", { title: i.title, desc: i.desc }))));
+    return (h(Host, null, this.data.map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
   }
   static get style() { return videoboxStripContainerCss; }
 };
 
-const videoboxStripItemCss = ":host{border:1px solid #000;min-width:250px;height:160px;display:flex;flex-direction:column;justify-content:space-between}.text{padding:10px}";
+const videoboxStripItemCss = ".wrapper{position:relative;height:160px;color:#fff;border-radius:5px}.wrapper:hover{transform:scale(1.3);transition-duration:1s}.overlay{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}.text{padding:15px}videobox-video{display:none}";
 
 let VideoboxStripItem$1 = class extends H {
   constructor() {
     super();
     this.__registerHost();
     this.__attachShadow();
+    this.active = false;
+  }
+  mouseEnterHandler() {
+    this.active = true;
+    this.ref.style.zIndex = '99';
+    this.imgRef.style.display = 'none';
+    this.videoRef.style.display = 'initial';
+  }
+  mouseLeaveHandler() {
+    this.active = false;
+    this.ref.style.zIndex = '1';
+    this.imgRef.style.display = 'initial';
+    this.videoRef.style.display = 'none';
   }
   render() {
-    return (h(Host, null, h("div", { class: "text" }, this.title), h("div", { class: "text" }, this.desc)));
+    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("div", { class: "text" }, this.item.title), h("div", { class: "text" }, this.item.description)))));
   }
   static get style() { return videoboxStripItemCss; }
 };
 
-const MyComponent = /*@__PURE__*/proxyCustomElement(MyComponent$1, [1,"my-component",{"first":[1],"middle":[1],"last":[1]}]);
+const videoboxVideoCss = "video{height:160px;object-fit:cover;object-position:50% 50%}";
+
+let VideoboxVideo$1 = class extends H {
+  constructor() {
+    super();
+    this.__registerHost();
+    this.__attachShadow();
+  }
+  watchActiveHandler() {
+    if (this.active) {
+      this.videoRef.play();
+    }
+    else {
+      this.videoRef.pause();
+    }
+  }
+  render() {
+    return (h(Host, null, h("video", { src: this.src, muted: true, loop: true, ref: el => this.videoRef = el })));
+  }
+  static get watchers() { return {
+    "active": ["watchActiveHandler"]
+  }; }
+  static get style() { return videoboxVideoCss; }
+};
+
 const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[16]}]);
-const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"title":[1],"desc":[1],"src":[1]}]);
+const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"item":[16],"index":[2],"active":[32]},[[1,"mouseenter","mouseEnterHandler"],[1,"mouseleave","mouseLeaveHandler"]]]);
+const VideoboxVideo = /*@__PURE__*/proxyCustomElement(VideoboxVideo$1, [1,"videobox-video",{"active":[4],"src":[1]}]);
 const defineCustomElements = (opts) => {
   if (typeof customElements !== 'undefined') {
     [
-      MyComponent,
-  VideoboxStripContainer,
-  VideoboxStripItem
+      VideoboxStripContainer,
+  VideoboxStripItem,
+  VideoboxVideo
     ].forEach(cmp => {
       if (!customElements.get(cmp.is)) {
         customElements.define(cmp.is, cmp, opts);
@@ -1007,4 +1108,4 @@ const defineCustomElements = (opts) => {
   }
 };
 
-export { MyComponent, VideoboxStripContainer, VideoboxStripItem, defineCustomElements, setAssetPath, setPlatformOptions };
+export { VideoboxStripContainer, VideoboxStripItem, VideoboxVideo, defineCustomElements, setAssetPath, setPlatformOptions };

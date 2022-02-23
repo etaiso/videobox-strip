@@ -7,11 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `desc`   | `desc`    |             | `string` | `undefined` |
-| `src`    | `src`     |             | `string` | `undefined` |
-| `title`  | `title`   |             | `string` | `undefined` |
+| Property | Attribute | Description | Type           | Default     |
+| -------- | --------- | ----------- | -------------- | ----------- |
+| `index`  | `index`   |             | `number`       | `undefined` |
+| `item`   | --        |             | `VideoboxItem` | `undefined` |
 
 
 ## Dependencies
@@ -20,9 +19,14 @@
 
  - [videobox-strip-container](../videobox-strip-container)
 
+### Depends on
+
+- [videobox-video](../videobox-video)
+
 ### Graph
 ```mermaid
 graph TD;
+  videobox-strip-item --> videobox-video
   videobox-strip-container --> videobox-strip-item
   style videobox-strip-item fill:#f9f,stroke:#333,stroke-width:4px
 ```

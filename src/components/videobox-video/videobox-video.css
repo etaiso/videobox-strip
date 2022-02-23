@@ -1,0 +1,5 @@
+video {
+  height: 160px;
+  object-fit: cover;
+  object-position: 50% 50%;
+}

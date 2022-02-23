@@ -5,14 +5,18 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { VideoboxItem } from "./types";
 export namespace Components {
     interface VideoboxStripContainer {
-        "data": { title: string, desc: string}[];
+        "data": VideoboxItem[];
     }
     interface VideoboxStripItem {
-        "desc": string;
+        "index": number;
+        "item": VideoboxItem;
+    }
+    interface VideoboxVideo {
+        "active": boolean;
         "src": string;
-        "title": string;
     }
 }
 declare global {
@@ -28,23 +32,34 @@ declare global {
         prototype: HTMLVideoboxStripItemElement;
         new (): HTMLVideoboxStripItemElement;
     };
+    interface HTMLVideoboxVideoElement extends Components.VideoboxVideo, HTMLStencilElement {
+    }
+    var HTMLVideoboxVideoElement: {
+        prototype: HTMLVideoboxVideoElement;
+        new (): HTMLVideoboxVideoElement;
+    };
     interface HTMLElementTagNameMap {
         "videobox-strip-container": HTMLVideoboxStripContainerElement;
         "videobox-strip-item": HTMLVideoboxStripItemElement;
+        "videobox-video": HTMLVideoboxVideoElement;
     }
 }
 declare namespace LocalJSX {
     interface VideoboxStripContainer {
-        "data"?: { title: string, desc: string}[];
+        "data"?: VideoboxItem[];
     }
     interface VideoboxStripItem {
-        "desc"?: string;
+        "index"?: number;
+        "item"?: VideoboxItem;
+    }
+    interface VideoboxVideo {
+        "active"?: boolean;
         "src"?: string;
-        "title"?: string;
     }
     interface IntrinsicElements {
         "videobox-strip-container": VideoboxStripContainer;
         "videobox-strip-item": VideoboxStripItem;
+        "videobox-video": VideoboxVideo;
     }
 }
 export { LocalJSX as JSX };
@@ -53,6 +68,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "videobox-strip-container": LocalJSX.VideoboxStripContainer & JSXBase.HTMLAttributes<HTMLVideoboxStripContainerElement>;
             "videobox-strip-item": LocalJSX.VideoboxStripItem & JSXBase.HTMLAttributes<HTMLVideoboxStripItemElement>;
+            "videobox-video": LocalJSX.VideoboxVideo & JSXBase.HTMLAttributes<HTMLVideoboxVideoElement>;
         }
     }
 }
