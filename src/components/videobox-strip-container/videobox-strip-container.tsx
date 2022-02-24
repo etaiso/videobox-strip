@@ -39,9 +39,7 @@ export class VideoboxStripContainer {
   render() {
     // @ts-ignore
     const parsed = this.getAttribute && JSON.parse(this.getAttribute('data'));
-    console.log('parsed', parsed);
     const data = parsed ?? defaultData;
-    console.log('data', data);
     return (
       <Host>
         {data.map((item, index) => <videobox-strip-item item={item} index={index}></videobox-strip-item>)}
