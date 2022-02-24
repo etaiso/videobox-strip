@@ -36,8 +36,7 @@ export class VideoboxStripContainer {
   @Prop() data: any;
 
   render() {
-    // @ts-ignore
-    const parsed = this.data ? JSON.parse(this.data) : this.getAttribute && JSON.parse(this.getAttribute('data'));
+    const parsed = this.data && JSON.parse(decodeURIComponent(this.data));
     const data = parsed ?? defaultData;
     
     return (
