@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type             | Default     |
-| -------- | --------- | ----------- | ---------------- | ----------- |
-| `data`   | --        |             | `VideoboxItem[]` | `undefined` |
+| Property | Attribute | Description | Type  | Default     |
+| -------- | --------- | ----------- | ----- | ----------- |
+| `data`   | `data`    |             | `any` | `undefined` |
 
 
 ## Dependencies

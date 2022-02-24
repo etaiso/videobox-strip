@@ -8,7 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { VideoboxItem } from "./types";
 export namespace Components {
     interface VideoboxStripContainer {
-        "data": VideoboxItem[];
+        "data": any;
     }
     interface VideoboxStripItem {
         "index": number;
@@ -46,7 +46,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface VideoboxStripContainer {
-        "data"?: VideoboxItem[];
+        "data"?: any;
     }
     interface VideoboxStripItem {
         "index"?: number;

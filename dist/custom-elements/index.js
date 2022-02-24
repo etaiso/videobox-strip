@@ -1019,7 +1019,7 @@ const flush = () => {
 const nextTick = /*@__PURE__*/ (cb) => promiseResolve().then(cb);
 const writeTask = /*@__PURE__*/ queueTask(queueDomWrites, true);
 
-const videoboxStripContainerCss = ":host{display:flex;flex-direction:row-reverse;gap:10px;overflow-x:scroll}";
+const videoboxStripContainerCss = ":host{display:flex;flex-direction:row-reverse;gap:10px;margin-top:24px;margin-bottom:24px}";
 
 const defaultData = [
   {
@@ -1055,7 +1055,7 @@ let VideoboxStripContainer$1 = class extends H {
   }
   render() {
     // @ts-ignore
-    const parsed = this.getAttribute && JSON.parse(this.getAttribute('data'));
+    const parsed = this.data ? JSON.parse(this.data) : this.getAttribute && JSON.parse(this.getAttribute('data'));
     const data = parsed !== null && parsed !== void 0 ? parsed : defaultData;
     return (h(Host, null, data.map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
   }
@@ -1114,7 +1114,7 @@ let VideoboxVideo$1 = class extends H {
   static get style() { return videoboxVideoCss; }
 };
 
-const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[16]}]);
+const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[8]}]);
 const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"item":[16],"index":[2],"active":[32]},[[1,"mouseenter","mouseEnterHandler"],[1,"mouseleave","mouseLeaveHandler"]]]);
 const VideoboxVideo = /*@__PURE__*/proxyCustomElement(VideoboxVideo$1, [1,"videobox-video",{"active":[4],"src":[1]}]);
 const defineCustomElements = (opts) => {

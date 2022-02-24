@@ -5473,7 +5473,7 @@ const cmpModules = new Map, getModule = e => {
  e["s-p"] = [], e["s-rc"] = [], addHostEventListeners(e, o, t.$listeners$), hostRefs.set(e, o);
 }, styles = new Map;
 
-const videoboxStripContainerCss = "/*!@:host*/.sc-videobox-strip-container-h{display:flex;flex-direction:row-reverse;gap:10px;overflow-x:scroll}";
+const videoboxStripContainerCss = "/*!@:host*/.sc-videobox-strip-container-h{display:flex;flex-direction:row-reverse;gap:10px;margin-top:24px;margin-bottom:24px}";
 
 const defaultData = [
   {
@@ -5507,7 +5507,7 @@ class VideoboxStripContainer {
   }
   render() {
     // @ts-ignore
-    const parsed = this.getAttribute && JSON.parse(this.getAttribute('data'));
+    const parsed = this.data ? JSON.parse(this.data) : this.getAttribute && JSON.parse(this.getAttribute('data'));
     const data = parsed !== null && parsed !== void 0 ? parsed : defaultData;
     return (hAsync(Host, null, data.map((item, index) => hAsync("videobox-strip-item", { item: item, index: index }))));
   }
@@ -5516,7 +5516,7 @@ class VideoboxStripContainer {
     "$flags$": 9,
     "$tagName$": "videobox-strip-container",
     "$members$": {
-      "data": [16]
+      "data": [8]
     },
     "$listeners$": undefined,
     "$lazyBundleId$": "-",
