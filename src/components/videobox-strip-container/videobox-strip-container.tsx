@@ -42,7 +42,9 @@ export class VideoboxStripContainer {
     
     return (
       <Host>
-        {data.map((item, index) => <videobox-strip-item item={item} index={index}></videobox-strip-item>)}
+        <div class="wrapper">
+          {data.map((item, index) => <videobox-strip-item item={item} index={index}></videobox-strip-item>)}
+        </div>
       </Host>
     );
   }

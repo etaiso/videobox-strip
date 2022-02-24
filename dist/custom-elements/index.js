@@ -1019,7 +1019,7 @@ const flush = () => {
 const nextTick = /*@__PURE__*/ (cb) => promiseResolve().then(cb);
 const writeTask = /*@__PURE__*/ queueTask(queueDomWrites, true);
 
-const videoboxStripContainerCss = ":host{display:flex;flex-direction:row-reverse;gap:10px;margin-top:24px;margin-bottom:24px}";
+const videoboxStripContainerCss = ":host{position:absolute}.wrapper{display:flex;flex-direction:row-reverse;gap:10px}";
 
 const defaultData = [
   {
@@ -1057,7 +1057,7 @@ let VideoboxStripContainer$1 = class extends H {
     // @ts-ignore
     const parsed = this.data ? JSON.parse(this.data) : this.getAttribute && JSON.parse(this.getAttribute('data'));
     const data = parsed !== null && parsed !== void 0 ? parsed : defaultData;
-    return (h(Host, null, data.map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
+    return (h(Host, null, h("div", { class: "wrapper" }, data.map((item, index) => h("videobox-strip-item", { item: item, index: index })))));
   }
   static get style() { return videoboxStripContainerCss; }
 };

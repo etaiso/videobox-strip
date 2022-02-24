@@ -1,7 +1,9 @@
 :host {
+  position: absolute;
+}
+
+.wrapper {
   display: flex;
   flex-direction: row-reverse;
   gap: 10px;
-  margin-top: 24px;
-  margin-bottom: 24px;
 }
