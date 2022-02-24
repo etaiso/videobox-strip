@@ -1021,6 +1021,32 @@ const writeTask = /*@__PURE__*/ queueTask(queueDomWrites, true);
 
 const videoboxStripContainerCss = ":host{display:flex;flex-direction:row;gap:10px}";
 
+const defaultData = [
+  {
+    title: 'Dummy title #1',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_c5dfb9a4acf74b67806ea4cb604b9c7f/1080p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/827c6d_f28efa6109c442bb9f0d9d64f6b3178c~mv2.jpeg/v1/fill/w_250,h_160,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/10.jpeg'
+  },
+  {
+    title: 'Dummy title #2',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_3da4a26484194105bde5b3935f5afb7b/480p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg'
+  },
+  {
+    title: 'Dummy title #3',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_2e82a4146c344371990b5839819e8806/480p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/11062b_2e82a4146c344371990b5839819e8806f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_2e82a4146c344371990b5839819e8806f000.jpg'
+  },
+  {
+    title: 'Dummy title #4',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_b9abbd9e13a9459db58a6baa340377e7/480p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg'
+  },
+];
 let VideoboxStripContainer$1 = class extends H {
   constructor() {
     super();
@@ -1028,16 +1054,16 @@ let VideoboxStripContainer$1 = class extends H {
     this.__attachShadow();
     // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
     // @ts-ignore
-    this.data = JSON.parse(this.getAttribute('data'));
+    this.data = this.getAttribute ? JSON.parse(this.getAttribute('data')) : defaultData;
   }
   render() {
     console.log('this.data', this.data);
-    return (h(Host, null, this.data.map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
+    return (h(Host, null, (this.data || []).map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
   }
   static get style() { return videoboxStripContainerCss; }
 };
 
-const videoboxStripItemCss = ".wrapper{position:relative;height:160px;width:240px;color:#fff;border-radius:5px}.wrapper:hover{transform:scale(1.3);transition-duration:0.8s}.overlay{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}.text{padding:15px}videobox-video{display:none}img{filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
+const videoboxStripItemCss = ":host{--font-color:#fff;--font-family:'Arial,Helvetica,sans-serif';--font-weight:400;--minViewportSize:320}.wrapper{position:relative;height:100%;width:240px;color:var(--font-color);font-family:var(--font-family);border-radius:5px}.wrapper:hover{transform:scale(1.3);transition-duration:0.8s}.overlay{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}.text{margin:0;padding:15px;font-weight:var(--font-weight)}.title{font-size:calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))))}.desc{font-size:14px}.rtl{direction:rtl}videobox-video{display:none}img{object-fit:cover;object-position:50% 50%;filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
 
 let VideoboxStripItem$1 = class extends H {
   constructor() {
@@ -1059,12 +1085,12 @@ let VideoboxStripItem$1 = class extends H {
     this.videoRef.style.display = 'none';
   }
   render() {
-    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("div", { class: "text" }, this.item.title), h("div", { class: "text" }, this.item.description)))));
+    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("h3", { class: "text title rtl" }, this.item.title), h("p", { class: "text desc rtl" }, this.item.description)))));
   }
   static get style() { return videoboxStripItemCss; }
 };
 
-const videoboxVideoCss = "video{height:160px;width:240px;object-fit:cover;object-position:50% 50%;border-radius:5px}";
+const videoboxVideoCss = "video{height:100%;width:240px;object-fit:cover;object-position:50% 50%;border-radius:5px}";
 
 let VideoboxVideo$1 = class extends H {
   constructor() {

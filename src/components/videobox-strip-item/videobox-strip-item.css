@@ -1,8 +1,16 @@
+:host {
+  --font-color: #fff;
+  --font-family: 'Arial,Helvetica,sans-serif';
+  --font-weight: 400;
+  --minViewportSize: 320;
+}
+
 .wrapper {
   position: relative;
-  height: 160px;
+  height: 100%;
   width: 240px;
-  color: #fff;
+  color: var(--font-color);
+  font-family: var(--font-family);
   border-radius: 5px;
 }
 
@@ -22,7 +30,21 @@
 }
 
 .text {
+  margin: 0;
   padding: 15px;
+  font-weight: var(--font-weight);
+}
+
+.title {
+  font-size: calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))));
+}
+
+.desc {
+  font-size: 14px;
+}
+
+.rtl {
+  direction: rtl;
 }
 
 videobox-video {
@@ -30,6 +52,8 @@ videobox-video {
 }
 
 img {
+  object-fit: cover;
+  object-position: 50% 50%;
   filter: brightness(50%);
   border-radius: 5px;
   width: 100%;

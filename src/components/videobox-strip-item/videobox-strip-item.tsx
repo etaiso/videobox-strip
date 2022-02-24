@@ -38,12 +38,12 @@ export class VideoboxStripItem {
           <img src={this.item.imageSrc} ref={el => this.imgRef = el} />
           <videobox-video src={this.item.videoSrc} active={this.active} ref={el => this.videoRef = el}></videobox-video>
           <div class="overlay">
-            <div class="text">
+            <h3 class="text title rtl">
               {this.item.title}
-            </div>
-            <div class="text">
+            </h3>
+            <p class="text desc rtl">
               {this.item.description}
-            </div>
+            </p>
           </div>
         </div>
       </Host>

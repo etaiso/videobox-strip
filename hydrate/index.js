@@ -5475,42 +5475,42 @@ const cmpModules = new Map, getModule = e => {
 
 const videoboxStripContainerCss = "/*!@:host*/.sc-videobox-strip-container-h{display:flex;flex-direction:row;gap:10px}";
 
-// const defaultData = [
-//   {
-//   title: 'Dummy title #1',
-//   description: 'Description',
-//   videoSrc: 'https://video.wixstatic.com/video/11062b_c5dfb9a4acf74b67806ea4cb604b9c7f/1080p/mp4/file.mp4',
-//   imageSrc: 'https://static.wixstatic.com/media/827c6d_f28efa6109c442bb9f0d9d64f6b3178c~mv2.jpeg/v1/fill/w_250,h_160,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/10.jpeg'
-// },
-// {
-//   title: 'Dummy title #2',
-//   description: 'Description',
-//   videoSrc: 'https://video.wixstatic.com/video/11062b_3da4a26484194105bde5b3935f5afb7b/480p/mp4/file.mp4',
-//   imageSrc: 'https://static.wixstatic.com/media/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg'
-// },
-// {
-//   title: 'Dummy title #3',
-//   description: 'Description',
-//   videoSrc: 'https://video.wixstatic.com/video/11062b_2e82a4146c344371990b5839819e8806/480p/mp4/file.mp4',
-//   imageSrc: 'https://static.wixstatic.com/media/11062b_2e82a4146c344371990b5839819e8806f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_2e82a4146c344371990b5839819e8806f000.jpg'
-// },
-// {
-//   title: 'Dummy title #4',
-//   description: 'Description',
-//   videoSrc: 'https://video.wixstatic.com/video/11062b_b9abbd9e13a9459db58a6baa340377e7/480p/mp4/file.mp4',
-//   imageSrc: 'https://static.wixstatic.com/media/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg'
-// },
-// ];
+const defaultData = [
+  {
+    title: 'Dummy title #1',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_c5dfb9a4acf74b67806ea4cb604b9c7f/1080p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/827c6d_f28efa6109c442bb9f0d9d64f6b3178c~mv2.jpeg/v1/fill/w_250,h_160,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/10.jpeg'
+  },
+  {
+    title: 'Dummy title #2',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_3da4a26484194105bde5b3935f5afb7b/480p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg'
+  },
+  {
+    title: 'Dummy title #3',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_2e82a4146c344371990b5839819e8806/480p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/11062b_2e82a4146c344371990b5839819e8806f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_2e82a4146c344371990b5839819e8806f000.jpg'
+  },
+  {
+    title: 'Dummy title #4',
+    description: 'Description',
+    videoSrc: 'https://video.wixstatic.com/video/11062b_b9abbd9e13a9459db58a6baa340377e7/480p/mp4/file.mp4',
+    imageSrc: 'https://static.wixstatic.com/media/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_b9abbd9e13a9459db58a6baa340377e7f000.jpg'
+  },
+];
 class VideoboxStripContainer {
   constructor(hostRef) {
     registerInstance(this, hostRef);
     // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
     // @ts-ignore
-    this.data = JSON.parse(this.getAttribute('data'));
+    this.data = this.getAttribute ? JSON.parse(this.getAttribute('data')) : defaultData;
   }
   render() {
     console.log('this.data', this.data);
-    return (hAsync(Host, null, this.data.map((item, index) => hAsync("videobox-strip-item", { item: item, index: index }))));
+    return (hAsync(Host, null, (this.data || []).map((item, index) => hAsync("videobox-strip-item", { item: item, index: index }))));
   }
   static get style() { return videoboxStripContainerCss; }
   static get cmpMeta() { return {
@@ -5523,7 +5523,7 @@ class VideoboxStripContainer {
   }; }
 }
 
-const videoboxStripItemCss = "/*!@.wrapper*/.wrapper.sc-videobox-strip-item{position:relative;height:160px;width:240px;color:#fff;border-radius:5px}/*!@.wrapper:hover*/.wrapper.sc-videobox-strip-item:hover{transform:scale(1.3);transition-duration:0.8s}/*!@.overlay*/.overlay.sc-videobox-strip-item{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}/*!@.text*/.text.sc-videobox-strip-item{padding:15px}/*!@videobox-video*/videobox-video.sc-videobox-strip-item{display:none}/*!@img*/img.sc-videobox-strip-item{filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
+const videoboxStripItemCss = "/*!@:host*/.sc-videobox-strip-item-h{--font-color:#fff;--font-family:'Arial,Helvetica,sans-serif';--font-weight:400;--minViewportSize:320}/*!@.wrapper*/.wrapper.sc-videobox-strip-item{position:relative;height:100%;width:240px;color:var(--font-color);font-family:var(--font-family);border-radius:5px}/*!@.wrapper:hover*/.wrapper.sc-videobox-strip-item:hover{transform:scale(1.3);transition-duration:0.8s}/*!@.overlay*/.overlay.sc-videobox-strip-item{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}/*!@.text*/.text.sc-videobox-strip-item{margin:0;padding:15px;font-weight:var(--font-weight)}/*!@.title*/.title.sc-videobox-strip-item{font-size:calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))))}/*!@.desc*/.desc.sc-videobox-strip-item{font-size:14px}/*!@.rtl*/.rtl.sc-videobox-strip-item{direction:rtl}/*!@videobox-video*/videobox-video.sc-videobox-strip-item{display:none}/*!@img*/img.sc-videobox-strip-item{object-fit:cover;object-position:50% 50%;filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
 
 class VideoboxStripItem {
   constructor(hostRef) {
@@ -5543,7 +5543,7 @@ class VideoboxStripItem {
     this.videoRef.style.display = 'none';
   }
   render() {
-    return (hAsync(Host, { ref: el => this.ref = el }, hAsync("div", { class: "wrapper" }, hAsync("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), hAsync("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), hAsync("div", { class: "overlay" }, hAsync("div", { class: "text" }, this.item.title), hAsync("div", { class: "text" }, this.item.description)))));
+    return (hAsync(Host, { ref: el => this.ref = el }, hAsync("div", { class: "wrapper" }, hAsync("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), hAsync("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), hAsync("div", { class: "overlay" }, hAsync("h3", { class: "text title rtl" }, this.item.title), hAsync("p", { class: "text desc rtl" }, this.item.description)))));
   }
   static get style() { return videoboxStripItemCss; }
   static get cmpMeta() { return {
@@ -5560,7 +5560,7 @@ class VideoboxStripItem {
   }; }
 }
 
-const videoboxVideoCss = "/*!@video*/video.sc-videobox-video{height:160px;width:240px;object-fit:cover;object-position:50% 50%;border-radius:5px}";
+const videoboxVideoCss = "/*!@video*/video.sc-videobox-video{height:100%;width:240px;object-fit:cover;object-position:50% 50%;border-radius:5px}";
 
 class VideoboxVideo {
   constructor(hostRef) {
