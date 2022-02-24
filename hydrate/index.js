@@ -5473,7 +5473,7 @@ const cmpModules = new Map, getModule = e => {
  e["s-p"] = [], e["s-rc"] = [], addHostEventListeners(e, o, t.$listeners$), hostRefs.set(e, o);
 }, styles = new Map;
 
-const videoboxStripContainerCss = "/*!@:host*/.sc-videobox-strip-container-h{display:flex;flex-direction:row;gap:10px}";
+const videoboxStripContainerCss = "/*!@:host*/.sc-videobox-strip-container-h{display:flex;flex-direction:row-reverse;gap:10px}";
 
 const defaultData = [
   {
@@ -5504,19 +5504,22 @@ const defaultData = [
 class VideoboxStripContainer {
   constructor(hostRef) {
     registerInstance(this, hostRef);
-    // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
-    // @ts-ignore
-    this.data = this.getAttribute ? JSON.parse(this.getAttribute('data')) : defaultData;
   }
   render() {
-    console.log('this.data', this.data);
-    return (hAsync(Host, null, (this.data || []).map((item, index) => hAsync("videobox-strip-item", { item: item, index: index }))));
+    // @ts-ignore
+    const parsed = this.getAttribute && JSON.parse(this.getAttribute('data'));
+    console.log('parsed', parsed);
+    const data = parsed !== null && parsed !== void 0 ? parsed : defaultData;
+    console.log('data', data);
+    return (hAsync(Host, null, data.map((item, index) => hAsync("videobox-strip-item", { item: item, index: index }))));
   }
   static get style() { return videoboxStripContainerCss; }
   static get cmpMeta() { return {
     "$flags$": 9,
     "$tagName$": "videobox-strip-container",
-    "$members$": undefined,
+    "$members$": {
+      "data": [16]
+    },
     "$listeners$": undefined,
     "$lazyBundleId$": "-",
     "$attrsToReflect$": []

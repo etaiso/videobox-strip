@@ -1,4 +1,5 @@
-import { Component, Host, h } from '@stencil/core';
+import { Component, Host, h, Prop } from '@stencil/core';
+import { VideoboxItem } from '../../types';
 
 const defaultData = [
   {
@@ -33,15 +34,17 @@ const defaultData = [
   shadow: true,
 })
 export class VideoboxStripContainer {
-  // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
-  // @ts-ignore
-  private data = this.getAttribute ? JSON.parse(this.getAttribute('data')) : defaultData;
+  @Prop() data: VideoboxItem[];
 
   render() {
-    console.log('this.data', this.data);
+    // @ts-ignore
+    const parsed = this.getAttribute && JSON.parse(this.getAttribute('data'));
+    console.log('parsed', parsed);
+    const data = parsed ?? defaultData;
+    console.log('data', data);
     return (
       <Host>
-        {(this.data || []).map((item, index) => <videobox-strip-item item={item} index={index}></videobox-strip-item>)}
+        {data.map((item, index) => <videobox-strip-item item={item} index={index}></videobox-strip-item>)}
       </Host>
     );
   }

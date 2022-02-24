@@ -5,6 +5,13 @@
 <!-- Auto Generated Below -->
 
 
+## Properties
+
+| Property | Attribute | Description | Type             | Default     |
+| -------- | --------- | ----------- | ---------------- | ----------- |
+| `data`   | --        |             | `VideoboxItem[]` | `undefined` |
+
+
 ## Dependencies
 
 ### Depends on

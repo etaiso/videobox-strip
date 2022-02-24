@@ -1019,7 +1019,7 @@ const flush = () => {
 const nextTick = /*@__PURE__*/ (cb) => promiseResolve().then(cb);
 const writeTask = /*@__PURE__*/ queueTask(queueDomWrites, true);
 
-const videoboxStripContainerCss = ":host{display:flex;flex-direction:row;gap:10px}";
+const videoboxStripContainerCss = ":host{display:flex;flex-direction:row-reverse;gap:10px}";
 
 const defaultData = [
   {
@@ -1052,13 +1052,14 @@ let VideoboxStripContainer$1 = class extends H {
     super();
     this.__registerHost();
     this.__attachShadow();
-    // @Prop() data: VideoboxItem[] = JSON.parse(this.getAttribute('data'));
-    // @ts-ignore
-    this.data = this.getAttribute ? JSON.parse(this.getAttribute('data')) : defaultData;
   }
   render() {
-    console.log('this.data', this.data);
-    return (h(Host, null, (this.data || []).map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
+    // @ts-ignore
+    const parsed = this.getAttribute && JSON.parse(this.getAttribute('data'));
+    console.log('parsed', parsed);
+    const data = parsed !== null && parsed !== void 0 ? parsed : defaultData;
+    console.log('data', data);
+    return (h(Host, null, data.map((item, index) => h("videobox-strip-item", { item: item, index: index }))));
   }
   static get style() { return videoboxStripContainerCss; }
 };
@@ -1115,7 +1116,7 @@ let VideoboxVideo$1 = class extends H {
   static get style() { return videoboxVideoCss; }
 };
 
-const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container"]);
+const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[16]}]);
 const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"item":[16],"index":[2],"active":[32]},[[1,"mouseenter","mouseEnterHandler"],[1,"mouseleave","mouseLeaveHandler"]]]);
 const VideoboxVideo = /*@__PURE__*/proxyCustomElement(VideoboxVideo$1, [1,"videobox-video",{"active":[4],"src":[1]}]);
 const defineCustomElements = (opts) => {
