@@ -23,6 +23,7 @@
 graph TD;
   videobox-strip-container --> videobox-strip-item
   videobox-strip-item --> videobox-video
+  videobox-strip-item --> videobox-button
   style videobox-strip-container fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

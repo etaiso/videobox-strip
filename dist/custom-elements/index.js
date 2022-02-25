@@ -221,7 +221,7 @@ const isHost = (node) => node && node.$tag$ === Host;
 const setAccessor = (elm, memberName, oldValue, newValue, isSvg, flags) => {
     if (oldValue !== newValue) {
         let isProp = isMemberInElement(elm, memberName);
-        memberName.toLowerCase();
+        let ln = memberName.toLowerCase();
         if (memberName === 'class') {
             const classList = elm.classList;
             const oldClasses = parseClassList(oldValue);
@@ -233,6 +233,45 @@ const setAccessor = (elm, memberName, oldValue, newValue, isSvg, flags) => {
             // minifier will clean this up
             if (newValue) {
                 newValue(elm);
+            }
+        }
+        else if ((!elm.__lookupSetter__(memberName)) &&
+            memberName[0] === 'o' &&
+            memberName[1] === 'n') {
+            // Event Handlers
+            // so if the member name starts with "on" and the 3rd characters is
+            // a capital letter, and it's not already a member on the element,
+            // then we're assuming it's an event listener
+            if (memberName[2] === '-') {
+                // on- prefixed events
+                // allows to be explicit about the dom event to listen without any magic
+                // under the hood:
+                // <my-cmp on-click> // listens for "click"
+                // <my-cmp on-Click> // listens for "Click"
+                // <my-cmp on-ionChange> // listens for "ionChange"
+                // <my-cmp on-EVENTS> // listens for "EVENTS"
+                memberName = memberName.slice(3);
+            }
+            else if (isMemberInElement(win, ln)) {
+                // standard event
+                // the JSX attribute could have been "onMouseOver" and the
+                // member name "onmouseover" is on the window's prototype
+                // so let's add the listener "mouseover", which is all lowercased
+                memberName = ln.slice(2);
+            }
+            else {
+                // custom event
+                // the JSX attribute could have been "onMyCustomEvent"
+                // so let's trim off the "on" prefix and lowercase the first character
+                // and add the listener "myCustomEvent"
+                // except for the first character, we keep the event name case
+                memberName = ln[2] + memberName.slice(3);
+            }
+            if (oldValue) {
+                plt.rel(elm, memberName, oldValue, false);
+            }
+            if (newValue) {
+                plt.ael(elm, memberName, newValue, false);
             }
         }
         else {
@@ -491,6 +530,20 @@ const renderVdom = (hostRef, renderFnResults) => {
     }
     // synchronous patch
     patch(oldVNode, rootVnode);
+};
+const getElement = (ref) => (ref);
+const createEvent = (ref, name, flags) => {
+    const elm = getElement(ref);
+    return {
+        emit: (detail) => {
+            return emitEvent(elm, name, {
+                bubbles: !!(flags & 4 /* Bubbles */),
+                composed: !!(flags & 2 /* Composed */),
+                cancelable: !!(flags & 1 /* Cancellable */),
+                detail,
+            });
+        },
+    };
 };
 /**
  * Helper function to create & dispatch a custom Event on a provided target
@@ -954,6 +1007,10 @@ const proxyCustomElement = (Cstr, compactMeta) => {
     Cstr.is = cmpMeta.$tagName$;
     return proxyComponent(Cstr, cmpMeta);
 };
+const getAssetPath = (path) => {
+    const assetUrl = new URL(path, plt.$resourcesUrl$);
+    return assetUrl.origin !== win.location.origin ? assetUrl.href : assetUrl.pathname;
+};
 const setAssetPath = (path) => (plt.$resourcesUrl$ = path);
 const setPlatformOptions = (opts) => Object.assign(plt, opts);
 const hostRefs = new WeakMap();
@@ -1019,6 +1076,25 @@ const flush = () => {
 const nextTick = /*@__PURE__*/ (cb) => promiseResolve().then(cb);
 const writeTask = /*@__PURE__*/ queueTask(queueDomWrites, true);
 
+const videoboxButtonCss = ":host{display:block}.icon{width:24px;height:24px;margin-top:2px;margin-left:-4px;cursor:pointer}button{width:32px;height:32px;background:#fff0;border:1px solid #fff;border-radius:50px}button:hover{background-color:#000;border:1px solid #000;filter:invert(1)}";
+
+let VideoboxButton$1 = class extends H {
+  constructor() {
+    super();
+    this.__registerHost();
+    this.__attachShadow();
+    this.buttonClicked = createEvent(this, "buttonClicked", 7);
+  }
+  onButtonClick(name) {
+    this.buttonClicked.emit(name);
+  }
+  render() {
+    return (h(Host, null, h("button", { onClick: () => this.onButtonClick(this.name) }, h("img", { src: getAssetPath(`./assets/${this.name}.svg`), class: 'icon' }))));
+  }
+  static get assetsDirs() { return ["assets"]; }
+  static get style() { return videoboxButtonCss; }
+};
+
 const videoboxStripContainerCss = ".wrapper{display:flex;flex-direction:row-reverse;gap:10px}";
 
 const defaultData = [
@@ -1061,7 +1137,7 @@ let VideoboxStripContainer$1 = class extends H {
   static get style() { return videoboxStripContainerCss; }
 };
 
-const videoboxStripItemCss = ":host{--font-color:#fff;--font-family:'Arial,Helvetica,sans-serif';--font-weight:400;--minViewportSize:320}.wrapper{position:relative;height:100%;width:240px;color:var(--font-color);font-family:var(--font-family);border-radius:5px}.wrapper:hover{transform:scale(1.3);transition-duration:0.8s}.overlay{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}.text{margin:0;padding:15px;font-weight:var(--font-weight)}.title{font-size:calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))))}.desc{font-size:14px}.rtl{direction:rtl}videobox-video{display:none}img{object-fit:cover;object-position:50% 50%;filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
+const videoboxStripItemCss = ":host{--font-color:#fff;--font-family:'Arial,Helvetica,sans-serif';--font-weight:400;--minViewportSize:320}.wrapper{position:relative;height:100%;width:240px;color:var(--font-color);font-family:var(--font-family);border-radius:5px;margin-top:24px;margin-bottom:24px}.wrapper:hover{transform:scale(1.3);transition-duration:0.8s}.overlay{position:absolute;top:0;height:100%;width:100%;display:grid;flex-direction:column;grid-template-areas:\"title title title\"\n    \"cart info desc\";grid-template-rows:min-content;grid-template-columns:min-content min-content;column-gap:8px}.text{margin:0;padding:15px;font-weight:var(--font-weight)}.title{font-size:calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))));grid-area:title;align-self:start}.desc{font-size:14px;grid-area:desc;align-self:end}.cart-btn{grid-area:cart;padding-left:10px}.info-btn{grid-area:info}.btn{align-self:end;justify-self:center;margin-bottom:10px}.rtl{direction:rtl}videobox-video{display:none}img{object-fit:cover;object-position:50% 50%;filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
 
 let VideoboxStripItem$1 = class extends H {
   constructor() {
@@ -1083,7 +1159,7 @@ let VideoboxStripItem$1 = class extends H {
     this.videoRef.style.display = 'none';
   }
   render() {
-    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("h3", { class: "text title rtl" }, this.item.title), h("p", { class: "text desc rtl" }, this.item.description)))));
+    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("h3", { class: "text title rtl" }, this.item.title), h("p", { class: "text desc rtl" }, this.item.description), this.active && h("videobox-button", { name: 'info', class: 'info-btn btn', onButtonClicked: el => console.log(el.detail) }), this.active && h("videobox-button", { name: 'cart', class: 'cart-btn btn', onButtonClicked: el => console.log(el.detail) })))));
   }
   static get style() { return videoboxStripItemCss; }
 };
@@ -1113,13 +1189,15 @@ let VideoboxVideo$1 = class extends H {
   static get style() { return videoboxVideoCss; }
 };
 
+const VideoboxButton = /*@__PURE__*/proxyCustomElement(VideoboxButton$1, [1,"videobox-button",{"name":[1]}]);
 const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[8]}]);
 const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"item":[16],"index":[2],"active":[32]},[[1,"mouseenter","mouseEnterHandler"],[1,"mouseleave","mouseLeaveHandler"]]]);
 const VideoboxVideo = /*@__PURE__*/proxyCustomElement(VideoboxVideo$1, [1,"videobox-video",{"active":[4],"src":[1]}]);
 const defineCustomElements = (opts) => {
   if (typeof customElements !== 'undefined') {
     [
-      VideoboxStripContainer,
+      VideoboxButton,
+  VideoboxStripContainer,
   VideoboxStripItem,
   VideoboxVideo
     ].forEach(cmp => {
@@ -1130,4 +1208,4 @@ const defineCustomElements = (opts) => {
   }
 };
 
-export { VideoboxStripContainer, VideoboxStripItem, VideoboxVideo, defineCustomElements, setAssetPath, setPlatformOptions };
+export { VideoboxButton, VideoboxStripContainer, VideoboxStripItem, VideoboxVideo, defineCustomElements, setAssetPath, setPlatformOptions };

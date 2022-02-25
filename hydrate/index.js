@@ -4728,7 +4728,7 @@ function hydrateFactory($stencilWindow, $stencilHydrateOpts, $stencilHydrateResu
 
 
 const NAMESPACE = 'videobox-strip';
-const BUILD = /* videobox-strip */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: false, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: false, hasRenderFn: true, hostListener: true, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: false, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: true, profile: false, prop: true, propBoolean: true, propMutable: false, propNumber: true, propString: true, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: true, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: true, vdomFunctional: false, vdomKey: false, vdomListener: false, vdomPropOrAttr: true, vdomRef: true, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: true };
+const BUILD = /* videobox-strip */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: false, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, cssVarShim: false, devTools: false, disconnectedCallback: false, dynamicImportShim: false, element: false, event: true, hasRenderFn: true, hostListener: true, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: false, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: true, profile: false, prop: true, propBoolean: true, propMutable: false, propNumber: true, propString: true, reflect: false, safari10: false, scoped: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: true, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: true, vdomFunctional: false, vdomKey: false, vdomListener: true, vdomPropOrAttr: true, vdomRef: true, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: true };
 
 function componentOnReady() {
  return getHostRef(this).$onReadyPromise$;
@@ -4971,11 +4971,11 @@ const createTime = (e, t = "") => {
  return (o.$attrs$ = null), (o.$name$ = null), o;
 }, Host = {}, isHost = e => e && e.$tag$ === Host, setAccessor = (e, t, o, n, s, l) => {
  if (o !== n) {
-  let a = isMemberInElement(e, t); t.toLowerCase();
+  let a = isMemberInElement(e, t), r = t.toLowerCase();
   if ("class" === t) {
    const t = e.classList, s = parseClassList(o), l = parseClassList(n);
    t.remove(...s.filter((e => e && !l.includes(e)))), t.add(...l.filter((e => e && !s.includes(e))));
-  } else if ("ref" === t) n && n(e); else {
+  } else if ("ref" === t) n && n(e); else if ((a ) || "o" !== t[0] || "n" !== t[1]) {
    {
     const i = isComplexType(n);
     if ((a || i && null !== n) && !s) try {
@@ -4987,7 +4987,8 @@ const createTime = (e, t = "") => {
     null == n || !1 === n ? !1 === n && "" !== e.getAttribute(t) || (e.removeAttribute(t)) : (!a || 4 & l || s) && !i && (n = !0 === n ? "" : n, 
     e.setAttribute(t, n));
    }
-  }
+  } else t = "-" === t[2] ? t.slice(3) : isMemberInElement(win, r) ? r.slice(2) : r[2] + t.slice(3), 
+  o && plt.rel(e, t, o, !1), n && plt.ael(e, t, n, !1);
  }
 }, parseClassListRegex = /\s/, parseClassList = e => e ? e.split(parseClassListRegex) : [], updateElement = (e, t, o, n) => {
  const s = 11 === t.$elm$.nodeType && t.$elm$.host ? t.$elm$.host : t.$elm$, l = e && e.$attrs$ || EMPTY_OBJ, a = t.$attrs$ || EMPTY_OBJ;
@@ -5105,7 +5106,17 @@ const createElm = (e, t, o, n) => {
   checkSlotFallbackVisibility && updateFallbackSlotVisibility(l.$elm$), plt.$flags$ &= -2, 
   relocateNodes.length = 0;
  }
-}, slotReferenceDebugNode = e => doc.createComment(`<slot${e.$name$ ? ' name="' + e.$name$ + '"' : ""}> (host=${hostTagName.toLowerCase()})`), originalLocationDebugNode = e => doc.createComment("org-location for " + (e.localName ? `<${e.localName}> (host=${e["s-hn"]})` : `[${e.textContent}]`)), emitEvent = (e, t, o) => {
+}, slotReferenceDebugNode = e => doc.createComment(`<slot${e.$name$ ? ' name="' + e.$name$ + '"' : ""}> (host=${hostTagName.toLowerCase()})`), originalLocationDebugNode = e => doc.createComment("org-location for " + (e.localName ? `<${e.localName}> (host=${e["s-hn"]})` : `[${e.textContent}]`)), getElement = e => getHostRef(e).$hostElement$ , createEvent = (e, t, o) => {
+ const n = getElement(e);
+ return {
+  emit: e => (emitEvent(n, t, {
+   bubbles: !!(4 & o),
+   composed: !!(2 & o),
+   cancelable: !!(1 & o),
+   detail: e
+  }))
+ };
+}, emitEvent = (e, t, o) => {
  const n = plt.ce(t, o);
  return e.dispatchEvent(n), n;
 }, attachToAncestor = (e, t) => {
@@ -5336,6 +5347,9 @@ const callRender = (e, t, o) => {
 }, setContentReference = e => {
  const t = e["s-cr"] = doc.createComment("");
  t["s-cn"] = !0, e.insertBefore(t, e.firstChild);
+}, getAssetPath = e => {
+ const t = new URL(e, plt.$resourcesUrl$);
+ return t.origin !== win.location.origin ? t.href : t.pathname;
 }, insertVdomAnnotations = (e, t) => {
  if (null != e) {
   const o = {
@@ -5473,7 +5487,34 @@ const cmpModules = new Map, getModule = e => {
  e["s-p"] = [], e["s-rc"] = [], addHostEventListeners(e, o, t.$listeners$), hostRefs.set(e, o);
 }, styles = new Map;
 
-const videoboxStripContainerCss = "/*!@:host*//*!@.wrapper*/.wrapper.sc-videobox-strip-container{display:flex;flex-direction:row-reverse;gap:10px}";
+const videoboxButtonCss = "/*!@:host*/.sc-videobox-button-h{display:block}/*!@.icon*/.icon.sc-videobox-button{width:24px;height:24px;margin-top:2px;margin-left:-4px;cursor:pointer}/*!@button*/button.sc-videobox-button{width:32px;height:32px;background:#fff0;border:1px solid #fff;border-radius:50px}/*!@button:hover*/button.sc-videobox-button:hover{background-color:#000;border:1px solid #000;filter:invert(1)}";
+
+class VideoboxButton {
+  constructor(hostRef) {
+    registerInstance(this, hostRef);
+    this.buttonClicked = createEvent(this, "buttonClicked", 7);
+  }
+  onButtonClick(name) {
+    this.buttonClicked.emit(name);
+  }
+  render() {
+    return (hAsync(Host, null, hAsync("button", { onClick: () => this.onButtonClick(this.name) }, hAsync("img", { src: getAssetPath(`./assets/${this.name}.svg`), class: 'icon' }))));
+  }
+  static get assetsDirs() { return ["assets"]; }
+  static get style() { return videoboxButtonCss; }
+  static get cmpMeta() { return {
+    "$flags$": 9,
+    "$tagName$": "videobox-button",
+    "$members$": {
+      "name": [1]
+    },
+    "$listeners$": undefined,
+    "$lazyBundleId$": "-",
+    "$attrsToReflect$": []
+  }; }
+}
+
+const videoboxStripContainerCss = "/*!@.wrapper*/.wrapper.sc-videobox-strip-container{display:flex;flex-direction:row-reverse;gap:10px}";
 
 const defaultData = [
   {
@@ -5523,7 +5564,7 @@ class VideoboxStripContainer {
   }; }
 }
 
-const videoboxStripItemCss = "/*!@:host*/.sc-videobox-strip-item-h{--font-color:#fff;--font-family:'Arial,Helvetica,sans-serif';--font-weight:400;--minViewportSize:320}/*!@.wrapper*/.wrapper.sc-videobox-strip-item{position:relative;height:100%;width:240px;color:var(--font-color);font-family:var(--font-family);border-radius:5px}/*!@.wrapper:hover*/.wrapper.sc-videobox-strip-item:hover{transform:scale(1.3);transition-duration:0.8s}/*!@.overlay*/.overlay.sc-videobox-strip-item{position:absolute;top:0;height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between}/*!@.text*/.text.sc-videobox-strip-item{margin:0;padding:15px;font-weight:var(--font-weight)}/*!@.title*/.title.sc-videobox-strip-item{font-size:calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))))}/*!@.desc*/.desc.sc-videobox-strip-item{font-size:14px}/*!@.rtl*/.rtl.sc-videobox-strip-item{direction:rtl}/*!@videobox-video*/videobox-video.sc-videobox-strip-item{display:none}/*!@img*/img.sc-videobox-strip-item{object-fit:cover;object-position:50% 50%;filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
+const videoboxStripItemCss = "/*!@:host*/.sc-videobox-strip-item-h{--font-color:#fff;--font-family:'Arial,Helvetica,sans-serif';--font-weight:400;--minViewportSize:320}/*!@.wrapper*/.wrapper.sc-videobox-strip-item{position:relative;height:100%;width:240px;color:var(--font-color);font-family:var(--font-family);border-radius:5px;margin-top:24px;margin-bottom:24px}/*!@.wrapper:hover*/.wrapper.sc-videobox-strip-item:hover{transform:scale(1.3);transition-duration:0.8s}/*!@.overlay*/.overlay.sc-videobox-strip-item{position:absolute;top:0;height:100%;width:100%;display:grid;flex-direction:column;grid-template-areas:\"title title title\"\n    \"cart info desc\";grid-template-rows:min-content;grid-template-columns:min-content min-content;column-gap:8px}/*!@.text*/.text.sc-videobox-strip-item{margin:0;padding:15px;font-weight:var(--font-weight)}/*!@.title*/.title.sc-videobox-strip-item{font-size:calc(18px + (26 - 18) * ((100vw - var(--minViewportSize) * 1px) / (var(--maxViewportSize) - var(--minViewportSize))));grid-area:title;align-self:start}/*!@.desc*/.desc.sc-videobox-strip-item{font-size:14px;grid-area:desc;align-self:end}/*!@.cart-btn*/.cart-btn.sc-videobox-strip-item{grid-area:cart;padding-left:10px}/*!@.info-btn*/.info-btn.sc-videobox-strip-item{grid-area:info}/*!@.btn*/.btn.sc-videobox-strip-item{align-self:end;justify-self:center;margin-bottom:10px}/*!@.rtl*/.rtl.sc-videobox-strip-item{direction:rtl}/*!@videobox-video*/videobox-video.sc-videobox-strip-item{display:none}/*!@img*/img.sc-videobox-strip-item{object-fit:cover;object-position:50% 50%;filter:brightness(50%);border-radius:5px;width:100%;height:100%}";
 
 class VideoboxStripItem {
   constructor(hostRef) {
@@ -5543,7 +5584,7 @@ class VideoboxStripItem {
     this.videoRef.style.display = 'none';
   }
   render() {
-    return (hAsync(Host, { ref: el => this.ref = el }, hAsync("div", { class: "wrapper" }, hAsync("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), hAsync("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), hAsync("div", { class: "overlay" }, hAsync("h3", { class: "text title rtl" }, this.item.title), hAsync("p", { class: "text desc rtl" }, this.item.description)))));
+    return (hAsync(Host, { ref: el => this.ref = el }, hAsync("div", { class: "wrapper" }, hAsync("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), hAsync("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), hAsync("div", { class: "overlay" }, hAsync("h3", { class: "text title rtl" }, this.item.title), hAsync("p", { class: "text desc rtl" }, this.item.description), this.active && hAsync("videobox-button", { name: 'info', class: 'info-btn btn', onButtonClicked: el => console.log(el.detail) }), this.active && hAsync("videobox-button", { name: 'cart', class: 'cart-btn btn', onButtonClicked: el => console.log(el.detail) })))));
   }
   static get style() { return videoboxStripItemCss; }
   static get cmpMeta() { return {
@@ -5595,6 +5636,7 @@ class VideoboxVideo {
 }
 
 registerComponents([
+  VideoboxButton,
   VideoboxStripContainer,
   VideoboxStripItem,
   VideoboxVideo,

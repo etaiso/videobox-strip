@@ -22,11 +22,13 @@
 ### Depends on
 
 - [videobox-video](../videobox-video)
+- [videobox-button](../videobox-button)
 
 ### Graph
 ```mermaid
 graph TD;
   videobox-strip-item --> videobox-video
+  videobox-strip-item --> videobox-button
   videobox-strip-container --> videobox-strip-item
   style videobox-strip-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
