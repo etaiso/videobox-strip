@@ -44,8 +44,8 @@ export class VideoboxStripItem {
             <p class="text desc rtl">
               {this.item.description}
             </p>
-            {this.active && <videobox-button name='info' class='info-btn btn' onButtonClicked={el => console.log(el.detail)}></videobox-button>}
-            {this.active && <videobox-button name='cart' class='cart-btn btn' onButtonClicked={el => console.log(el.detail)}></videobox-button>}
+            {this.active && <videobox-button type='info' id={this.item.id} class='info-btn btn' onButtonClicked={i => console.log(i.detail)}></videobox-button>}
+            {this.active && <videobox-button type='cart' id={this.item.id} class='cart-btn btn' onButtonClicked={i => console.log(i.detail)}></videobox-button>}
           </div>
         </div>
       </Host>

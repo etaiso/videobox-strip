@@ -1,5 +1,7 @@
 import { Component, Host, h, EventEmitter, Event, Prop, getAssetPath } from '@stencil/core';
 
+export type ButtonType = 'info' | 'cart';
+
 @Component({
   tag: 'videobox-button',
   styleUrl: 'videobox-button.css',
@@ -7,19 +9,16 @@ import { Component, Host, h, EventEmitter, Event, Prop, getAssetPath } from '@st
   shadow: true,
 })
 export class VideoboxButton {
-  @Prop() name: string;
+  @Prop() type: ButtonType;
+  @Prop() id: string;
 
-  @Event() buttonClicked: EventEmitter<string>;
-
-  onButtonClick(name: string) {
-    this.buttonClicked.emit(name);
-  }
+  @Event() buttonClicked: EventEmitter<{ type: ButtonType, id: string }>;
 
   render() {
     return (
       <Host>
-        <button onClick={() => this.onButtonClick(this.name)}>
-          <img src={getAssetPath(`./assets/${this.name}.svg`)} class='icon' />
+        <button onClick={() => this.buttonClicked.emit({ type: this.type, id: this.id})}>
+          <img src={getAssetPath(`./assets/${this.type}.svg`)} class='icon' />
         </button>
       </Host>
     );

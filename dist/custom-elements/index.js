@@ -1085,11 +1085,8 @@ let VideoboxButton$1 = class extends H {
     this.__attachShadow();
     this.buttonClicked = createEvent(this, "buttonClicked", 7);
   }
-  onButtonClick(name) {
-    this.buttonClicked.emit(name);
-  }
   render() {
-    return (h(Host, null, h("button", { onClick: () => this.onButtonClick(this.name) }, h("img", { src: getAssetPath(`./assets/${this.name}.svg`), class: 'icon' }))));
+    return (h(Host, null, h("button", { onClick: () => this.buttonClicked.emit({ type: this.type, id: this.id }) }, h("img", { src: getAssetPath(`./assets/${this.type}.svg`), class: 'icon' }))));
   }
   static get assetsDirs() { return ["assets"]; }
   static get style() { return videoboxButtonCss; }
@@ -1099,24 +1096,28 @@ const videoboxStripContainerCss = ".wrapper{display:flex;flex-direction:row-reve
 
 const defaultData = [
   {
+    id: '1',
     title: 'Dummy title #1',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_c5dfb9a4acf74b67806ea4cb604b9c7f/1080p/mp4/file.mp4',
     imageSrc: 'https://static.wixstatic.com/media/827c6d_f28efa6109c442bb9f0d9d64f6b3178c~mv2.jpeg/v1/fill/w_250,h_160,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/10.jpeg'
   },
   {
+    id: '2',
     title: 'Dummy title #2',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_3da4a26484194105bde5b3935f5afb7b/480p/mp4/file.mp4',
     imageSrc: 'https://static.wixstatic.com/media/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg'
   },
   {
+    id: '3',
     title: 'Dummy title #3',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_2e82a4146c344371990b5839819e8806/480p/mp4/file.mp4',
     imageSrc: 'https://static.wixstatic.com/media/11062b_2e82a4146c344371990b5839819e8806f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_2e82a4146c344371990b5839819e8806f000.jpg'
   },
   {
+    id: '4',
     title: 'Dummy title #4',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_b9abbd9e13a9459db58a6baa340377e7/480p/mp4/file.mp4',
@@ -1159,7 +1160,7 @@ let VideoboxStripItem$1 = class extends H {
     this.videoRef.style.display = 'none';
   }
   render() {
-    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("h3", { class: "text title rtl" }, this.item.title), h("p", { class: "text desc rtl" }, this.item.description), this.active && h("videobox-button", { name: 'info', class: 'info-btn btn', onButtonClicked: el => console.log(el.detail) }), this.active && h("videobox-button", { name: 'cart', class: 'cart-btn btn', onButtonClicked: el => console.log(el.detail) })))));
+    return (h(Host, { ref: el => this.ref = el }, h("div", { class: "wrapper" }, h("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), h("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), h("div", { class: "overlay" }, h("h3", { class: "text title rtl" }, this.item.title), h("p", { class: "text desc rtl" }, this.item.description), this.active && h("videobox-button", { type: 'info', id: this.item.id, class: 'info-btn btn', onButtonClicked: i => console.log(i.detail) }), this.active && h("videobox-button", { type: 'cart', id: this.item.id, class: 'cart-btn btn', onButtonClicked: i => console.log(i.detail) })))));
   }
   static get style() { return videoboxStripItemCss; }
 };
@@ -1189,7 +1190,7 @@ let VideoboxVideo$1 = class extends H {
   static get style() { return videoboxVideoCss; }
 };
 
-const VideoboxButton = /*@__PURE__*/proxyCustomElement(VideoboxButton$1, [1,"videobox-button",{"name":[1]}]);
+const VideoboxButton = /*@__PURE__*/proxyCustomElement(VideoboxButton$1, [1,"videobox-button",{"type":[1],"id":[1]}]);
 const VideoboxStripContainer = /*@__PURE__*/proxyCustomElement(VideoboxStripContainer$1, [1,"videobox-strip-container",{"data":[8]}]);
 const VideoboxStripItem = /*@__PURE__*/proxyCustomElement(VideoboxStripItem$1, [1,"videobox-strip-item",{"item":[16],"index":[2],"active":[32]},[[1,"mouseenter","mouseEnterHandler"],[1,"mouseleave","mouseLeaveHandler"]]]);
 const VideoboxVideo = /*@__PURE__*/proxyCustomElement(VideoboxVideo$1, [1,"videobox-video",{"active":[4],"src":[1]}]);

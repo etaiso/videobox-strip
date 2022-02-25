@@ -5,10 +5,12 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ButtonType } from "./components/videobox-button/videobox-button";
 import { VideoboxItem } from "./types";
 export namespace Components {
     interface VideoboxButton {
-        "name": string;
+        "id": string;
+        "type": ButtonType;
     }
     interface VideoboxStripContainer {
         "data": any;
@@ -56,8 +58,9 @@ declare global {
 }
 declare namespace LocalJSX {
     interface VideoboxButton {
-        "name"?: string;
-        "onButtonClicked"?: (event: CustomEvent<string>) => void;
+        "id"?: string;
+        "onButtonClicked"?: (event: CustomEvent<{ type: ButtonType, id: string }>) => void;
+        "type"?: ButtonType;
     }
     interface VideoboxStripContainer {
         "data"?: any;

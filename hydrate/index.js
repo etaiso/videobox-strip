@@ -5494,11 +5494,8 @@ class VideoboxButton {
     registerInstance(this, hostRef);
     this.buttonClicked = createEvent(this, "buttonClicked", 7);
   }
-  onButtonClick(name) {
-    this.buttonClicked.emit(name);
-  }
   render() {
-    return (hAsync(Host, null, hAsync("button", { onClick: () => this.onButtonClick(this.name) }, hAsync("img", { src: getAssetPath(`./assets/${this.name}.svg`), class: 'icon' }))));
+    return (hAsync(Host, null, hAsync("button", { onClick: () => this.buttonClicked.emit({ type: this.type, id: this.id }) }, hAsync("img", { src: getAssetPath(`./assets/${this.type}.svg`), class: 'icon' }))));
   }
   static get assetsDirs() { return ["assets"]; }
   static get style() { return videoboxButtonCss; }
@@ -5506,7 +5503,8 @@ class VideoboxButton {
     "$flags$": 9,
     "$tagName$": "videobox-button",
     "$members$": {
-      "name": [1]
+      "type": [1],
+      "id": [1]
     },
     "$listeners$": undefined,
     "$lazyBundleId$": "-",
@@ -5518,24 +5516,28 @@ const videoboxStripContainerCss = "/*!@.wrapper*/.wrapper.sc-videobox-strip-cont
 
 const defaultData = [
   {
+    id: '1',
     title: 'Dummy title #1',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_c5dfb9a4acf74b67806ea4cb604b9c7f/1080p/mp4/file.mp4',
     imageSrc: 'https://static.wixstatic.com/media/827c6d_f28efa6109c442bb9f0d9d64f6b3178c~mv2.jpeg/v1/fill/w_250,h_160,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/10.jpeg'
   },
   {
+    id: '2',
     title: 'Dummy title #2',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_3da4a26484194105bde5b3935f5afb7b/480p/mp4/file.mp4',
     imageSrc: 'https://static.wixstatic.com/media/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_3da4a26484194105bde5b3935f5afb7bf000.jpg'
   },
   {
+    id: '3',
     title: 'Dummy title #3',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_2e82a4146c344371990b5839819e8806/480p/mp4/file.mp4',
     imageSrc: 'https://static.wixstatic.com/media/11062b_2e82a4146c344371990b5839819e8806f000.jpg/v1/fill/w_250,h_160,al_c,q_80,usm_0.33_1.00_0.00,enc_auto/11062b_2e82a4146c344371990b5839819e8806f000.jpg'
   },
   {
+    id: '4',
     title: 'Dummy title #4',
     description: 'Description',
     videoSrc: 'https://video.wixstatic.com/video/11062b_b9abbd9e13a9459db58a6baa340377e7/480p/mp4/file.mp4',
@@ -5584,7 +5586,7 @@ class VideoboxStripItem {
     this.videoRef.style.display = 'none';
   }
   render() {
-    return (hAsync(Host, { ref: el => this.ref = el }, hAsync("div", { class: "wrapper" }, hAsync("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), hAsync("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), hAsync("div", { class: "overlay" }, hAsync("h3", { class: "text title rtl" }, this.item.title), hAsync("p", { class: "text desc rtl" }, this.item.description), this.active && hAsync("videobox-button", { name: 'info', class: 'info-btn btn', onButtonClicked: el => console.log(el.detail) }), this.active && hAsync("videobox-button", { name: 'cart', class: 'cart-btn btn', onButtonClicked: el => console.log(el.detail) })))));
+    return (hAsync(Host, { ref: el => this.ref = el }, hAsync("div", { class: "wrapper" }, hAsync("img", { src: this.item.imageSrc, ref: el => this.imgRef = el }), hAsync("videobox-video", { src: this.item.videoSrc, active: this.active, ref: el => this.videoRef = el }), hAsync("div", { class: "overlay" }, hAsync("h3", { class: "text title rtl" }, this.item.title), hAsync("p", { class: "text desc rtl" }, this.item.description), this.active && hAsync("videobox-button", { type: 'info', id: this.item.id, class: 'info-btn btn', onButtonClicked: i => console.log(i.detail) }), this.active && hAsync("videobox-button", { type: 'cart', id: this.item.id, class: 'cart-btn btn', onButtonClicked: i => console.log(i.detail) })))));
   }
   static get style() { return videoboxStripItemCss; }
   static get cmpMeta() { return {

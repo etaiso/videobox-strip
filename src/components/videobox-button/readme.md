@@ -7,16 +7,17 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `name`   | `name`    |             | `string` | `undefined` |
+| Property | Attribute | Description | Type               | Default     |
+| -------- | --------- | ----------- | ------------------ | ----------- |
+| `id`     | `id`      |             | `string`           | `undefined` |
+| `type`   | `type`    |             | `"cart" \| "info"` | `undefined` |
 
 
 ## Events
 
-| Event           | Description | Type                  |
-| --------------- | ----------- | --------------------- |
-| `buttonClicked` |             | `CustomEvent<string>` |
+| Event           | Description | Type                                             |
+| --------------- | ----------- | ------------------------------------------------ |
+| `buttonClicked` |             | `CustomEvent<{ type: ButtonType; id: string; }>` |
 
 
 ## Dependencies
